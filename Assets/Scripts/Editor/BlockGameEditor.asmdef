@@ -1,11 +1,12 @@
 {
-    "name": "BlocksGame",
-    "rootNamespace": "BlocksGame",
+    "name": "BlockGameEditor",
+    "rootNamespace": "BlockGame.Editor",
     "references": [
-        "GUID:696a0953692949b40bec8730e64e1fdd",
-        "GUID:776d03a35f1b52c4a9aed9f56d7b4229"
+        "GUID:f5b82b5c6787d814389677550bbbd601"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace BlocksGame
+namespace BlocksGame.UI
 {
     public class MainMenu : MonoBehaviour
     {
