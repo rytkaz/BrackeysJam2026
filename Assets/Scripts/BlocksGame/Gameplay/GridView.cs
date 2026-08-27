@@ -21,7 +21,7 @@ namespace BlocksGame.Gameplay
 
         private void Awake()
         {
-            centerOffset = new Vector2(gridSize.x * spacing.x / 2, playableGridHeight * spacing.y / 2);
+            CalculateCenterOffset();
         }
 
         public Vector3 GetGridSlotPosition(Vector2Int coordinates)
@@ -29,6 +29,11 @@ namespace BlocksGame.Gameplay
             return new Vector3(coordinates.x * spacing.x - centerOffset.x, coordinates.y * spacing.y - centerOffset.y, 0);
         }
 
+        private void CalculateCenterOffset()
+        {
+            centerOffset = new Vector2(gridSize.x * spacing.x / 2 - transform.position.x, playableGridHeight * spacing.y / 2 - transform.position.y);
+        }
+        
 #if UNITY_EDITOR
         [Button("Rebuild Grid")]
         private void BuildGridBackground()
@@ -45,14 +50,14 @@ namespace BlocksGame.Gameplay
                     DestroyImmediate(transform.GetChild(i).gameObject);
                 }
             }
-            centerOffset = new Vector2(gridSize.x * spacing.x / 2, playableGridHeight * spacing.y / 2);
+            CalculateCenterOffset();
             for (int y = 0; y < playableGridHeight; y++)
             {
                 for (int x = 0; x < gridSize.x; x++)
                 {
-                    var position = new Vector3(x * spacing.x - centerOffset.x, y * spacing.y - centerOffset.y, 0);
+                    //var position = new Vector3(x * spacing.x - centerOffset.x, y * spacing.y - centerOffset.y, 0);
                     var slot = PrefabUtility.InstantiatePrefab(gridSlotBg, transform) as GameObject;
-                    slot.transform.localPosition = position;
+                    slot.transform.position = GetGridSlotPosition(new Vector2Int(x, y));
                 }
             }
         }

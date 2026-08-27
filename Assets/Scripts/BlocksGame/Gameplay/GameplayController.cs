@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using MessagePipe;
 using R3;
 using UnityEngine;
+using DisposableBag = R3.DisposableBag;
 
 namespace BlocksGame.Gameplay
 {
@@ -25,13 +27,14 @@ namespace BlocksGame.Gameplay
         private InputHandler inputHandler;
         private IPiece activePiece;
         private bool tickGameplay = true;
+        private IDisposable timer;
         
         public void Start()
         {
             grid = new Grid(gridView);
             inputHandler = new InputHandler(this);
             SpawnRandomPiece();
-            Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (tickGameplay) secondsElapsed.Value++; });
+            timer = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (tickGameplay) secondsElapsed.Value++; });
         }
         
         private void SpawnRandomPiece()
@@ -75,6 +78,7 @@ namespace BlocksGame.Gameplay
             if (rowsCleared > 0)
             {
                 grid.MoveRowsDown(highestRowCleared + 1, rowsCleared);
+                score.Value += rowsCleared;
             }
             SpawnRandomPiece();
         }
@@ -97,6 +101,11 @@ namespace BlocksGame.Gameplay
                 timeSinceLastTick = 0;
                 TickGameplayLoop();
             }
+        }
+
+        private void OnDestroy()
+        {
+            timer?.Dispose();
         }
     }
 }
