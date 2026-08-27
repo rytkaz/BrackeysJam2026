@@ -1,9 +1,18 @@
 ﻿namespace BlocksGame
 {
-    public static class Constants
+
+    public static class InputActions
     {
-        //Scenes
-        public const string MenuScene = "MainMenu";
-        public const string GameScene = "Game";
+        public const string Rotate = "Rotate";
+        public const string Drop = "Drop";
+        public const string MoveRight  = "MoveRight";
+        public const string MoveLeft  = "MoveLeft";
+        public const string Pause = "Pause";
+    }
+    
+    public static class SceneNames
+    {
+        public const string Menu = "MainMenu";
+        public const string Game = "Game";
     }
 }

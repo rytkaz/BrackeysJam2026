@@ -3,7 +3,9 @@
     "rootNamespace": "BlocksGame",
     "references": [
         "GUID:696a0953692949b40bec8730e64e1fdd",
-        "GUID:776d03a35f1b52c4a9aed9f56d7b4229"
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:08b38f39e2d9e594389b7a4cf4c2c338"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

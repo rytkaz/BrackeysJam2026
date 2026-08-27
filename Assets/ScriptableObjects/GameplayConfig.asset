@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772ae73ba3b841bb997c8768967f2a03, type: 3}
+  m_Name: GameplayConfig
+  m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.GameplayConfig
+  standardPieceFactories:
+  - {fileID: 11400000, guid: 462008c3a4f54e544a94ccffde014430, type: 2}
+  - {fileID: 11400000, guid: a2c5470dc86996d4084390b0d7b16a1e, type: 2}
+  - {fileID: 11400000, guid: ac0f236ee844b95498ee92e455aa6376, type: 2}
+  - {fileID: 11400000, guid: a33b3e0ad270ba4468c9a849ca6f48d8, type: 2}
+  - {fileID: 11400000, guid: 6f6f9b2c50b4dd24d844a3febf943f35, type: 2}
+  - {fileID: 11400000, guid: 20c43f0b907d62d4f95dfa12fd8bae2b, type: 2}
+  - {fileID: 11400000, guid: 89b047d30b7e27347b5b3c292b11ff31, type: 2}
+  dropSpeedMultiplier: 0.1

@@ -7,7 +7,7 @@ namespace BlocksGame.UI
     {
         public void Play()
         {
-            SceneManager.LoadScene(Constants.GameScene);
+            SceneManager.LoadScene(SceneNames.Game);
         }
         
         public void Quit()

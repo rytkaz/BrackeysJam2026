@@ -7,7 +7,7 @@ namespace BlocksGame
     {
         private void Awake()
         {
-            SceneManager.LoadScene(Constants.MenuScene);
+            SceneManager.LoadScene(SceneNames.Menu);
         }
     }
 }

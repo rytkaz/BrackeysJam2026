@@ -7,8 +7,10 @@ namespace BlocksGame.Gameplay
     public interface IPiece
     {
         public event Action OnFinishedMovement;
+        public event Action OnCoordinatesChanged;
+        public event Action OnShapeChanged;
         public Vector2Int[] Size { get; }
-        public ReadOnlyReactiveProperty<Vector2Int> Coordinates { get; }
+        public Vector2Int Coordinates { get; }
         public void Rotate();
         public void MoveHorizontal(int direction);
         public void ChangeCoordinates(Vector2Int coordinates);

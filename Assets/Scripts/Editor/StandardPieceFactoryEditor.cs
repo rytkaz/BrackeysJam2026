@@ -6,13 +6,20 @@ namespace BlocksGame.Gameplay
     [CustomEditor(typeof(StandardPieceFactory))]
     public class StandardPieceFactoryEditor : Editor
     {
-        private const int GridSize = 7;
-        private const int CellSize = 30;
-        private SerializedProperty shapeCoordinatesProperty;
+        private const int cellSize = 30;
+        private SerializedProperty shapeDefaultProperty;
+        private SerializedProperty shape90Property;
+        private SerializedProperty shape180Property;
+        private SerializedProperty shape270Property;
+        private SerializedProperty gridSizeProperty;
 
         private void OnEnable()
         {
-            shapeCoordinatesProperty = serializedObject.FindProperty("shapeCoordinates");
+            shapeDefaultProperty = serializedObject.FindProperty("shapeDefault");
+            shape90Property = serializedObject.FindProperty("shape90");
+            shape180Property = serializedObject.FindProperty("shape180");
+            shape270Property = serializedObject.FindProperty("shape270");
+            gridSizeProperty = serializedObject.FindProperty("gridSize");
         }
 
         public override void OnInspectorGUI()
@@ -23,30 +30,42 @@ namespace BlocksGame.Gameplay
 
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("Shape Editor", EditorStyles.boldLabel);
-
-            DrawShapeGrid();
-
+            EditorGUILayout.PropertyField(gridSizeProperty);
             EditorGUILayout.Space(5);
             if (GUILayout.Button("Clear Shape"))
             {
-                shapeCoordinatesProperty.ClearArray();
-                shapeCoordinatesProperty.InsertArrayElementAtIndex(0);
-                shapeCoordinatesProperty.GetArrayElementAtIndex(0).vector2IntValue = Vector2Int.zero;
+                ClearShapeProperty(shapeDefaultProperty);
+                ClearShapeProperty(shape90Property);
+                ClearShapeProperty(shape180Property);
+                ClearShapeProperty(shape270Property);
             }
-
+            DrawShapeGrid(shapeDefaultProperty);
+            EditorGUILayout.Space(5);
+            DrawShapeGrid(shape90Property);
+            EditorGUILayout.Space(5);
+            DrawShapeGrid(shape180Property);
+            EditorGUILayout.Space(5);
+            DrawShapeGrid(shape270Property);
+            
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawShapeGrid()
+        private void ClearShapeProperty(SerializedProperty targetProperty)
         {
-            var coordinates = GetCurrentCoordinates();
-            int halfSize = GridSize / 2;
+            targetProperty.ClearArray();
+            targetProperty.InsertArrayElementAtIndex(0);
+            targetProperty.GetArrayElementAtIndex(0).vector2IntValue = Vector2Int.zero;
+        }
+        
+        private void DrawShapeGrid(SerializedProperty targetProperty)
+        {
+            var coordinates = GetCurrentCoordinates(targetProperty);
 
             EditorGUILayout.BeginVertical();
-            for (int y = GridSize - 1; y >= 0; y--)
+            for (int y = gridSizeProperty.intValue - 1; y >= 0; y--)
             {
                 EditorGUILayout.BeginHorizontal();
-                for (int x = 0; x < GridSize; x++)
+                for (int x = 0; x < gridSizeProperty.intValue; x++)
                 {
                     var coord = GridIndexToCenteredCoord(x, y);
                     bool isActive = coordinates.Contains(coord);
@@ -54,9 +73,9 @@ namespace BlocksGame.Gameplay
                     var prevColor = GUI.backgroundColor;
                     GUI.backgroundColor = isActive ? Color.cyan : Color.gray;
 
-                    if (GUILayout.Button("", GUILayout.Width(CellSize), GUILayout.Height(CellSize)))
+                    if (GUILayout.Button("", GUILayout.Width(cellSize), GUILayout.Height(cellSize)))
                     {
-                        ToggleCoordinate(coord);
+                        ToggleCoordinate(targetProperty, coord);
                     }
 
                     GUI.backgroundColor = prevColor;
@@ -68,34 +87,34 @@ namespace BlocksGame.Gameplay
 
         private Vector2Int GridIndexToCenteredCoord(int x, int y)
         {
-            int halfSize = GridSize / 2;
+            int halfSize = gridSizeProperty.intValue / 2;
             return new Vector2Int(x - halfSize, y - halfSize);
         }
 
-        private System.Collections.Generic.List<Vector2Int> GetCurrentCoordinates()
+        private System.Collections.Generic.List<Vector2Int> GetCurrentCoordinates(SerializedProperty targetProperty)
         {
             var coords = new System.Collections.Generic.List<Vector2Int>();
-            for (int i = 0; i < shapeCoordinatesProperty.arraySize; i++)
+            for (int i = 0; i < targetProperty.arraySize; i++)
             {
-                coords.Add(shapeCoordinatesProperty.GetArrayElementAtIndex(i).vector2IntValue);
+                coords.Add(targetProperty.GetArrayElementAtIndex(i).vector2IntValue);
             }
             return coords;
         }
 
-        private void ToggleCoordinate(Vector2Int coord)
+        private void ToggleCoordinate(SerializedProperty targetProperty, Vector2Int coord)
         {
-            var coords = GetCurrentCoordinates();
+            var coords = GetCurrentCoordinates(targetProperty);
             int index = coords.IndexOf(coord);
 
             if (index >= 0)
             {
-                shapeCoordinatesProperty.DeleteArrayElementAtIndex(index);
+                targetProperty.DeleteArrayElementAtIndex(index);
             }
             else
             {
-                int newIndex = shapeCoordinatesProperty.arraySize;
-                shapeCoordinatesProperty.InsertArrayElementAtIndex(newIndex);
-                shapeCoordinatesProperty.GetArrayElementAtIndex(newIndex).vector2IntValue = coord;
+                int newIndex = targetProperty.arraySize;
+                targetProperty.InsertArrayElementAtIndex(newIndex);
+                targetProperty.GetArrayElementAtIndex(newIndex).vector2IntValue = coord;
             }
         }
     }

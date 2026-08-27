@@ -1,4 +1,7 @@
 ﻿using NaughtyAttributes;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace BlocksGame.Gameplay
@@ -11,10 +14,15 @@ namespace BlocksGame.Gameplay
 
         public Vector2 Spacing => spacing;
         public Vector2Int GridSize => gridSize;
-
+        
         private Grid grid;
         private Vector2 centerOffset;
-        
+
+        private void Awake()
+        {
+            centerOffset = new Vector2(gridSize.x * spacing.x / 2, gridSize.y * spacing.y / 2);
+        }
+
         public Vector3 GetGridSlotPosition(Vector2Int coordinates)
         {
             return new Vector3(coordinates.x * spacing.x - centerOffset.x, coordinates.y * spacing.y - centerOffset.y, 0);
@@ -42,7 +50,7 @@ namespace BlocksGame.Gameplay
                 for (int x = 0; x < gridSize.x; x++)
                 {
                     var position = new Vector3(x * spacing.x - centerOffset.x, y * spacing.y - centerOffset.y, 0);
-                    var slot = Instantiate(gridSlotBg, transform);
+                    var slot = PrefabUtility.InstantiatePrefab(gridSlotBg, transform) as GameObject;
                     slot.transform.localPosition = position;
                 }
             }
