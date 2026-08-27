@@ -244,7 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40821f09dea49ecb7ef9d0b846ae08c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.GridView
-  gridSize: {x: 10, y: 20}
+  playableGridHeight: 20
+  gridSize: {x: 10, y: 30}
   spacing: {x: 0.33, y: 0.33}
   gridSlotBg: {fileID: 995681027415900520, guid: a52227e9e84784745ae6275a6c98d16c, type: 3}
 --- !u!1001 &41590683587585426

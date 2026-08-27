@@ -287,6 +287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.GameplayController
   config: {fileID: 11400000, guid: 1a135cf8454fd0d45b59b48205bdf957, type: 2}
   gridView: {fileID: 1546258894}
+  DropHeld: 0
 --- !u!4 &971467756
 Transform:
   m_ObjectHideFlags: 0

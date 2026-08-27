@@ -8,11 +8,12 @@ namespace BlocksGame.Gameplay
 {
     public class GridView : MonoBehaviour
     {
+        [SerializeField] private int playableGridHeight;
         [SerializeField] private Vector2Int gridSize;
         [SerializeField] private Vector2 spacing;
         [SerializeField] private GameObject gridSlotBg;
 
-        public Vector2 Spacing => spacing;
+        public int PlayableGridHeight  => playableGridHeight;
         public Vector2Int GridSize => gridSize;
         
         private Grid grid;
@@ -20,7 +21,7 @@ namespace BlocksGame.Gameplay
 
         private void Awake()
         {
-            centerOffset = new Vector2(gridSize.x * spacing.x / 2, gridSize.y * spacing.y / 2);
+            centerOffset = new Vector2(gridSize.x * spacing.x / 2, playableGridHeight * spacing.y / 2);
         }
 
         public Vector3 GetGridSlotPosition(Vector2Int coordinates)
@@ -44,8 +45,8 @@ namespace BlocksGame.Gameplay
                     DestroyImmediate(transform.GetChild(i).gameObject);
                 }
             }
-            centerOffset = new Vector2(gridSize.x * spacing.x / 2, gridSize.y * spacing.y / 2);
-            for (int y = 0; y < gridSize.y; y++)
+            centerOffset = new Vector2(gridSize.x * spacing.x / 2, playableGridHeight * spacing.y / 2);
+            for (int y = 0; y < playableGridHeight; y++)
             {
                 for (int x = 0; x < gridSize.x; x++)
                 {
