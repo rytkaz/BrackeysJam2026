@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MessagePipe;
 using R3;
 using UnityEngine;
@@ -39,7 +40,6 @@ namespace BlocksGame.Gameplay
             var startingCoords = new Vector2Int(grid.View.GridSize.x / 2, grid.View.GridSize.y - 2);
             if (grid.CheckIsMoveValid(activePiece, startingCoords))
             {
-                Debug.Log("Spawn new piece");
                 activePiece.OnFinishedMovement += OnActivePieceFinishedMovement;
                 grid.MovePiece(activePiece, startingCoords);
             }
@@ -53,8 +53,29 @@ namespace BlocksGame.Gameplay
 
         private void OnActivePieceFinishedMovement()
         {
-            Debug.Log("ACTIVE PIECE FINISHED");
             activePiece.OnFinishedMovement -= OnActivePieceFinishedMovement;
+            HashSet<int> rowsToScan = new HashSet<int>();
+            foreach (var coordOffset in activePiece.Size)
+            {
+                rowsToScan.Add((activePiece.CenterCoordinates + coordOffset).y);
+            }
+            int rowsCleared = 0;
+            int highestRowCleared = int.MinValue;
+            foreach (var y in rowsToScan)
+            {
+                if (grid.CheckAndClearRow(y))
+                {
+                    if (highestRowCleared < y)
+                    {
+                        highestRowCleared = y;
+                    }
+                    rowsCleared++;
+                }
+            }
+            if (rowsCleared > 0)
+            {
+                grid.MoveRowsDown(highestRowCleared + 1, rowsCleared);
+            }
             SpawnRandomPiece();
         }
         

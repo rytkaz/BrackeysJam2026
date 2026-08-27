@@ -55,11 +55,52 @@ namespace BlocksGame.Gameplay
             pieces[coordinates.x, coordinates.y] = null;
         }
 
+        public bool CheckAndClearRow(int y)
+        {
+            for (int x = 0; x < pieces.GetLength(0); x++)
+            {
+                if (pieces[x, y] == null)
+                {
+                    return false;
+                }
+            }
+            for (int x = 0; x < pieces.GetLength(0); x++)
+            {
+                pieces[x,y].ClearSingleBlock(new Vector2Int(x,y));
+            }
+           
+            return true;
+        }
+
+        public void MoveRowsDown(int startingY, int stepsAmount)
+        {
+            bool performedMove = true;
+            //Move all other rows down
+            for (int y = startingY; y < pieces.GetLength(1); y++)
+            {
+                if (!performedMove)
+                {
+                    //Break loop if last row was empty
+                    break;
+                }
+                performedMove = false;
+                for (int x = 0; x < pieces.GetLength(0); x++)
+                {
+                    if (pieces[x, y] == null)
+                    {
+                        continue;
+                    }
+                    performedMove = true;
+                    pieces[x,y].MoveSingleBlock(new Vector2Int(x,y), new Vector2Int(x,y - stepsAmount));
+                }
+            }
+        }
+        
         public bool CheckIsRotationValid(IPiece piece, Vector2Int[] newSize)
         {
             return newSize.All(coordOffset =>
             {
-                var targetCoords =  piece.Coordinates + coordOffset;
+                var targetCoords =  piece.CenterCoordinates + coordOffset;
                 if (CheckOutOfBounds(targetCoords))
                 {
                     Debug.Log($"Out of bounds: {targetCoords} ; GridSize: {pieces.GetLength(0)} ; {pieces.GetLength(1)}");

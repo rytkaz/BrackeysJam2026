@@ -12,9 +12,10 @@ namespace BlocksGame.Gameplay
         public event Action OnFinishedMovement;
         public event Action OnShapeChanged;
         public event Action OnCoordinatesChanged;
-        public Vector2Int[] Size => shapeRotations[currentRotation];
-        public Vector2Int Coordinates { get; private set; } = Vector2Int.zero;
+        public IList<Vector2Int> Size => isActive ? shapeRotations[currentRotation] : modifiedShape;
+        public Vector2Int CenterCoordinates { get; private set; } = Vector2Int.zero;
 
+        private List<Vector2Int> modifiedShape = new List<Vector2Int>();
         private Rotation currentRotation = Rotation.Deg0;
         private DisposableBag disposable;
         private bool isActive = true;
@@ -32,9 +33,10 @@ namespace BlocksGame.Gameplay
         {
             if (isActive)
             {
-                if (!grid.CheckIsMoveValid(this, Coordinates + Vector2Int.down))
+                if (!grid.CheckIsMoveValid(this, CenterCoordinates + Vector2Int.down))
                 {
                     isActive = false;
+                    modifiedShape.AddRange(shapeRotations[currentRotation]);
                     OnFinishedMovement?.Invoke();
                 }
                 else
@@ -48,24 +50,48 @@ namespace BlocksGame.Gameplay
         {
             foreach (var coordOffset in Size)
             {
-                grid.FreeSlot(this, Coordinates + coordOffset);
+                grid.FreeSlot(this, CenterCoordinates + coordOffset);
             }
             foreach (var coordOffset in Size)
             {
                 grid.OccupySlot(this, newCoordinates + coordOffset);
             }
-            Coordinates = newCoordinates;
+            CenterCoordinates = newCoordinates;
             OnCoordinatesChanged?.Invoke();
+        }
+
+        public void ClearSingleBlock(Vector2Int blockCoordinates)
+        {
+            if (!modifiedShape.Contains(blockCoordinates - CenterCoordinates)) return;
+            modifiedShape.Remove(blockCoordinates - CenterCoordinates);
+            grid.FreeSlot(this, blockCoordinates);
+            OnShapeChanged?.Invoke();
+        }
+
+        public void MoveSingleBlock(Vector2Int blockCoordinates, Vector2Int targetCoordinates)
+        {
+            if (!modifiedShape.Contains(blockCoordinates - CenterCoordinates))
+            {
+                Debug.LogError($"Shape DOes not contain block: {blockCoordinates}");
+                return;
+            }
+            modifiedShape.Remove(blockCoordinates - CenterCoordinates);
+            modifiedShape.Add(targetCoordinates - CenterCoordinates);
+            grid.FreeSlot(this, blockCoordinates);
+            grid.OccupySlot(this, targetCoordinates);
+            OnShapeChanged?.Invoke();
         }
         
         private void Move(Vector2Int direction)
         {
-            grid.MovePiece(this, Coordinates + direction);
+            if (!isActive) return;
+            grid.MovePiece(this, CenterCoordinates + direction);
         }
         
         public void Rotate()
         {
-            Rotation newRotation = Rotation.Deg0;
+            if (!isActive) return;
+            var newRotation = Rotation.Deg0;
             if (currentRotation != Rotation.Deg270)
             {
                 newRotation = currentRotation + 1;
@@ -73,11 +99,11 @@ namespace BlocksGame.Gameplay
             if (!grid.CheckIsRotationValid(this, shapeRotations[newRotation])) return;
             foreach (var coordOffset in Size)
             {
-                grid.FreeSlot(this, Coordinates + coordOffset);
+                grid.FreeSlot(this, CenterCoordinates + coordOffset);
             }
             foreach (var coordOffset in shapeRotations[newRotation])
             {
-                grid.OccupySlot(this, Coordinates + coordOffset);
+                grid.OccupySlot(this, CenterCoordinates + coordOffset);
             }
             currentRotation = newRotation;
             OnShapeChanged?.Invoke();
