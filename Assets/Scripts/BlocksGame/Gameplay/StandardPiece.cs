@@ -7,21 +7,30 @@ using DisposableBag = R3.DisposableBag;
 
 namespace BlocksGame.Gameplay
 {
+    public enum PieceState
+    {
+        Moving,
+        MovementFinished,
+        Inactive
+    }
+    
     public class StandardPiece : IPiece
     {
-        public event Action OnFinishedMovement;
         public event Action OnShapeChanged;
         public event Action OnCoordinatesChanged;
-        public IList<Vector2Int> Size => isActive ? shapeRotations[currentRotation] : modifiedShape;
+        
+        public IList<Vector2Int> Size => state.Value == PieceState.Moving ? shapeRotations[currentRotation] : modifiedShape;
         public Vector2Int CenterCoordinates { get; private set; } = Vector2Int.zero;
-
-        private List<Vector2Int> modifiedShape = new List<Vector2Int>();
+        public ReadOnlyReactiveProperty<PieceState> State => state;
+            
+        private ReactiveProperty<PieceState> state = new(PieceState.Moving);
+        private List<Vector2Int> modifiedShape = new();
         private Rotation currentRotation = Rotation.Deg0;
         private DisposableBag disposable;
-        private bool isActive = true;
         private readonly Grid grid;
         private readonly Dictionary<Rotation, Vector2Int[]> shapeRotations;
-
+        private List<IPieceBehaviour> behaviours =  new();
+        
         public StandardPiece(Grid grid, Dictionary<Rotation, Vector2Int[]> shapeRotations)
         {
             this.grid = grid;
@@ -31,21 +40,43 @@ namespace BlocksGame.Gameplay
         
         private void OnGameplayTick(MGameplayTick tick)
         {
-            if (isActive)
+            if (state.Value != PieceState.Moving) return;
+            
+            if (!grid.CheckIsMoveValid(this, CenterCoordinates + Vector2Int.down))
             {
-                if (!grid.CheckIsMoveValid(this, CenterCoordinates + Vector2Int.down))
+                modifiedShape.AddRange(shapeRotations[currentRotation]);
+                state.Value = PieceState.MovementFinished;
+                if (behaviours.Count > 0)
                 {
-                    isActive = false;
-                    modifiedShape.AddRange(shapeRotations[currentRotation]);
-                    OnFinishedMovement?.Invoke();
+                    var isActivityEndBlocked = new ReactiveProperty<bool>(false);
+                    foreach (var behaviour in behaviours)
+                    {
+                        isActivityEndBlocked.CombineLatest(behaviour.BlockPieceActivityEnd, (value1, value2) => value1 && value2);
+                    }
+                    isActivityEndBlocked.Subscribe((value) =>
+                    {
+                        if (!value)
+                        {
+                            BecomeInactive();
+                        }
+                    }).AddTo(ref disposable);
                 }
                 else
                 {
-                    Move(Vector2Int.down);
+                    BecomeInactive();
                 }
+            }
+            else
+            {
+                Move(Vector2Int.down);
             }
         }
 
+        private void BecomeInactive()
+        {
+            state.Value = PieceState.Inactive;
+        }
+        
         public void ChangeCoordinates(Vector2Int newCoordinates)
         {
             foreach (var coordOffset in Size)
@@ -84,13 +115,13 @@ namespace BlocksGame.Gameplay
         
         private void Move(Vector2Int direction)
         {
-            if (!isActive) return;
+            if (state.Value != PieceState.Moving) return;
             grid.MovePiece(this, CenterCoordinates + direction);
         }
         
         public void Rotate()
         {
-            if (!isActive) return;
+            if (state.Value != PieceState.Moving) return;
             var newRotation = Rotation.Deg0;
             if (currentRotation != Rotation.Deg270)
             {
@@ -117,6 +148,16 @@ namespace BlocksGame.Gameplay
         public void Cleanup()
         {
             disposable.Dispose();
+            foreach (var behaviour in behaviours)
+            {
+                behaviour.Cleanup();
+            }
+        }
+
+        public void AddBehaviour(IPieceBehaviourFactory behaviourFactory)
+        {
+            var behaviour = behaviourFactory.CreateBehaviour(this, grid);
+            behaviours.Add(behaviour);
         }
     }
 }

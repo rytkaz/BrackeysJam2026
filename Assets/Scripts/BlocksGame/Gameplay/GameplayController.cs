@@ -28,6 +28,7 @@ namespace BlocksGame.Gameplay
         private IPiece activePiece;
         private bool tickGameplay = true;
         private IDisposable timer;
+        private IDisposable pieceStateDisposable;
         
         public void Start()
         {
@@ -43,7 +44,7 @@ namespace BlocksGame.Gameplay
             var startingCoords = new Vector2Int(grid.View.GridSize.x / 2, grid.View.PlayableGridHeight);
             if (grid.CheckIsMoveValid(activePiece, startingCoords))
             {
-                activePiece.OnFinishedMovement += OnActivePieceFinishedMovement;
+                pieceStateDisposable = activePiece.State.Subscribe(OnPieceStateChange);
                 grid.MovePiece(activePiece, startingCoords);
             }
             else
@@ -54,9 +55,10 @@ namespace BlocksGame.Gameplay
             }
         }
 
-        private void OnActivePieceFinishedMovement()
+        private void OnPieceStateChange(PieceState state)
         {
-            activePiece.OnFinishedMovement -= OnActivePieceFinishedMovement;
+            if (state != PieceState.Inactive) return;
+            pieceStateDisposable.Dispose();
             HashSet<int> rowsToScan = new HashSet<int>();
             foreach (var coordOffset in activePiece.Size)
             {
@@ -105,6 +107,7 @@ namespace BlocksGame.Gameplay
 
         private void OnDestroy()
         {
+            pieceStateDisposable?.Dispose();
             timer?.Dispose();
             inputHandler?.Cleanup();
         }

@@ -13,7 +13,7 @@ namespace BlocksGame.Gameplay
             var basePiece = basePieceFactories[Random.Range(0, basePieceFactories.Length)].CreatePiece(grid);
             foreach (var behaviour in behaviours)
             {
-                behaviour.CreateBehaviour(basePiece, grid);
+                basePiece.AddBehaviour(behaviour);
             }
             return basePiece;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,21 +8,23 @@ namespace BlocksGame.Gameplay
 {
     public class MoverPieceBehaviour : IPieceBehaviour
     {
+        public ReadOnlyReactiveProperty<bool> BlockPieceActivityEnd => blockPieceActivityEnd;
+
+        private readonly ReactiveProperty<bool> blockPieceActivityEnd = new ReactiveProperty<bool>(true);
         private readonly IPiece piece;
         private readonly Grid grid;
+        private readonly IDisposable disposable;
         
         public MoverPieceBehaviour(IPiece piece, Grid grid)
         {
             this.piece = piece;
             this.grid = grid;
-            piece.OnFinishedMovement += TriggerBehaviour;
-            Debug.Log("Setup move behaviour");
+            disposable = piece.State.Subscribe(OnPieceStateChange);
         }
 
-        private void TriggerBehaviour()
+        private void OnPieceStateChange(PieceState state)
         {
-            Debug.Log("Trigger move");
-            piece.OnFinishedMovement -= TriggerBehaviour;
+            if (state != PieceState.MovementFinished) return;
             var blocksToMove = Random.Range(1, piece.Size.Count);
             var blocks = new List<Vector2Int>(piece.Size);
             while (blocksToMove > 0 && blocks.Count > 0)
@@ -36,7 +39,12 @@ namespace BlocksGame.Gameplay
                 blocks.RemoveAt(blockIndex);
                 blocksToMove--;
             }
-            Debug.Log("Move finished");
+            blockPieceActivityEnd.Value = false;
+        }
+
+        public void Cleanup()
+        {
+            disposable?.Dispose();
         }
     }
 }

@@ -7,9 +7,9 @@ namespace BlocksGame.Gameplay
 {
     public interface IPiece
     {
-        public event Action OnFinishedMovement;
         public event Action OnCoordinatesChanged;
         public event Action OnShapeChanged;
+        public ReadOnlyReactiveProperty<PieceState> State { get; }
         public IList<Vector2Int> Size { get; }
         public Vector2Int CenterCoordinates { get; }
         public void Rotate();
@@ -17,6 +17,7 @@ namespace BlocksGame.Gameplay
         public void ChangeCoordinates(Vector2Int coordinates);
         public void ClearSingleBlock(Vector2Int coordinates);
         public void MoveSingleBlock(Vector2Int blockCoordinates, Vector2Int targetCoordinates);
+        public void AddBehaviour(IPieceBehaviourFactory behaviourFactory);
         public void Cleanup();
     }
 }
