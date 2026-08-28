@@ -22,7 +22,8 @@ namespace BlocksGame.Gameplay
         public IList<Vector2Int> Size => state.Value == PieceState.Moving ? shapeRotations[currentRotation] : modifiedShape;
         public Vector2Int CenterCoordinates { get; private set; } = Vector2Int.zero;
         public ReadOnlyReactiveProperty<PieceState> State => state;
-            
+        public PieceView View { get; }
+        
         private ReactiveProperty<PieceState> state = new(PieceState.Moving);
         private List<Vector2Int> modifiedShape = new();
         private Rotation currentRotation = Rotation.Deg0;
@@ -31,8 +32,9 @@ namespace BlocksGame.Gameplay
         private readonly Dictionary<Rotation, Vector2Int[]> shapeRotations;
         private List<IPieceBehaviour> behaviours =  new();
         
-        public StandardPiece(Grid grid, Dictionary<Rotation, Vector2Int[]> shapeRotations)
+        public StandardPiece(PieceView view, Grid grid, Dictionary<Rotation, Vector2Int[]> shapeRotations)
         {
+            View = view;
             this.grid = grid;
             this.shapeRotations =  shapeRotations;
             GlobalMessagePipe.GetSubscriber<MGameplayTick>().Subscribe(OnGameplayTick).AddTo(ref disposable);
@@ -50,10 +52,10 @@ namespace BlocksGame.Gameplay
                     state.Value = PieceState.MovementFinished;
                     if (behaviours.Count > 0)
                     {
-                        var isActivityEndBlocked = new ReactiveProperty<bool>(false);
+                        Observable<bool> isActivityEndBlocked = new ReactiveProperty<bool>(false);
                         foreach (var behaviour in behaviours)
                         {
-                            isActivityEndBlocked.CombineLatest(behaviour.BlockPieceActivityEnd, (value1, value2) => value1 && value2);
+                            isActivityEndBlocked = isActivityEndBlocked.CombineLatest(behaviour.BlockPieceActivityEnd, (value1, value2)  => value1 || value2);
                         }
                         isActivityEndBlocked.Subscribe((value) =>
                         {
@@ -107,7 +109,7 @@ namespace BlocksGame.Gameplay
             OnShapeChanged?.Invoke();
         }
 
-        public void MoveSingleBlock(Vector2Int blockCoordinates, Vector2Int targetCoordinates)
+        public void MoveSingleBlock(Vector2Int blockCoordinates, Vector2Int targetCoordinates, bool skipShapeChangeTrigger = false)
         {
             if (!modifiedShape.Contains(blockCoordinates - CenterCoordinates))
             {
@@ -118,7 +120,10 @@ namespace BlocksGame.Gameplay
             modifiedShape.Add(targetCoordinates - CenterCoordinates);
             grid.FreeSlot(this, blockCoordinates);
             grid.OccupySlot(this, targetCoordinates);
-            OnShapeChanged?.Invoke();
+            if (!skipShapeChangeTrigger)
+            {
+                OnShapeChanged?.Invoke();
+            }
         }
         
         private void Move(Vector2Int direction)

@@ -26,7 +26,7 @@ namespace BlocksGame.Gameplay
         public override IPiece CreatePiece(Grid grid)
         {
             var view = Instantiate(pieceViewPrefab, grid.View.transform);
-            var piece = new StandardPiece(grid, new Dictionary<Rotation, Vector2Int[]>()
+            var piece = new StandardPiece(view, grid, new Dictionary<Rotation, Vector2Int[]>()
             {
                 {Rotation.Deg0, shapeDefault},
                 {Rotation.Deg90, shape90},

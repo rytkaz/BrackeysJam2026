@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -25,6 +26,7 @@ namespace BlocksGame.Gameplay
         private void OnPieceStateChange(PieceState state)
         {
             if (state != PieceState.MovementFinished) return;
+            
             var blocksToMove = Random.Range(1, piece.Size.Count);
             var blocks = new List<Vector2Int>(piece.Size);
             while (blocksToMove > 0 && blocks.Count > 0)
@@ -34,12 +36,18 @@ namespace BlocksGame.Gameplay
                 {
                     break;
                 }
-                int blockIndex = Random.Range(0, blocks.Count);
-                piece.MoveSingleBlock(blocks[blockIndex] + piece.CenterCoordinates, availableSlots[Random.Range(0, availableSlots.Count)]);
+                var blockIndex = Random.Range(0, blocks.Count);
+                var targetCoords  = availableSlots[Random.Range(0, availableSlots.Count)];
+                piece.MoveSingleBlock(blocks[blockIndex] + piece.CenterCoordinates, targetCoords, true);
+                var targetPos = grid.View.GetGridSlotPosition(targetCoords);
+                piece.View.GetBlockByCoordinates(blocks[blockIndex]).transform.DOJump(targetPos, 1, 1, 0.4f).SetEase(Ease.OutQuad);
                 blocks.RemoveAt(blockIndex);
                 blocksToMove--;
             }
-            blockPieceActivityEnd.Value = false;
+            Observable.Timer(TimeSpan.FromSeconds(0.4f)).Subscribe(_ =>
+            {
+                blockPieceActivityEnd.Value = false;
+            });
         }
 
         public void Cleanup()

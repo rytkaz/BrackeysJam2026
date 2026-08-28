@@ -10,10 +10,6 @@ namespace BlocksGame
         [RuntimeInitializeOnLoadMethod]
         public static void Initialize()
         {
-            ObservableSystem.RegisterUnhandledExceptionHandler((ex) =>
-            {
-                Debug.LogError("HANDLER: " + ex);
-            });
             GlobalMessagePipe.SetProvider(new BuiltinContainerBuilder()
                 .AddMessagePipe()
                 .AddMessageBroker<MGameplayTick>()

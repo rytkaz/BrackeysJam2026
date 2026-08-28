@@ -11,6 +11,7 @@ namespace BlocksGame.Gameplay
         private IDisposable disposable;
         private IPiece piece;
         private List<SpriteRenderer> spawnedBlocks = new List<SpriteRenderer>();
+        private Dictionary<Vector2Int, SpriteRenderer> blocks = new Dictionary<Vector2Int, SpriteRenderer>();
         private Grid grid;
         private Color color;
         
@@ -37,6 +38,7 @@ namespace BlocksGame.Gameplay
                 Destroy(gameObject);
                 return;
             }
+            blocks.Clear();
             for (int i = 0; i < piece.Size.Count; i++)
             {
                 if (spawnedBlocks.Count <= i)
@@ -46,6 +48,7 @@ namespace BlocksGame.Gameplay
                 }
                 spawnedBlocks[i].transform.position = grid.View.GetGridSlotPosition(piece.CenterCoordinates + piece.Size[i]);
                 spawnedBlocks[i].gameObject.SetActive(true);
+                blocks.Add(piece.Size[i], spawnedBlocks[i]);
             }
             for (int i = piece.Size.Count; i < spawnedBlocks.Count; i++)
             {
@@ -53,6 +56,11 @@ namespace BlocksGame.Gameplay
             }
         }
 
+        public SpriteRenderer GetBlockByCoordinates(Vector2Int coordinates)
+        {
+            return blocks[coordinates];
+        }
+        
         private void OnDestroy()
         {
             if (piece == null) return;
