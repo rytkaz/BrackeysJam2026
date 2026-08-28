@@ -40,35 +40,43 @@ namespace BlocksGame.Gameplay
         
         private void OnGameplayTick(MGameplayTick tick)
         {
-            if (state.Value != PieceState.Moving) return;
-            
-            if (!grid.CheckIsMoveValid(this, CenterCoordinates + Vector2Int.down))
+            try
             {
-                modifiedShape.AddRange(shapeRotations[currentRotation]);
-                state.Value = PieceState.MovementFinished;
-                if (behaviours.Count > 0)
+                if (state.Value != PieceState.Moving) return;
+            
+                if (!grid.CheckIsMoveValid(this, CenterCoordinates + Vector2Int.down))
                 {
-                    var isActivityEndBlocked = new ReactiveProperty<bool>(false);
-                    foreach (var behaviour in behaviours)
+                    modifiedShape.AddRange(shapeRotations[currentRotation]);
+                    state.Value = PieceState.MovementFinished;
+                    if (behaviours.Count > 0)
                     {
-                        isActivityEndBlocked.CombineLatest(behaviour.BlockPieceActivityEnd, (value1, value2) => value1 && value2);
-                    }
-                    isActivityEndBlocked.Subscribe((value) =>
-                    {
-                        if (!value)
+                        var isActivityEndBlocked = new ReactiveProperty<bool>(false);
+                        foreach (var behaviour in behaviours)
                         {
-                            BecomeInactive();
+                            isActivityEndBlocked.CombineLatest(behaviour.BlockPieceActivityEnd, (value1, value2) => value1 && value2);
                         }
-                    }).AddTo(ref disposable);
+                        isActivityEndBlocked.Subscribe((value) =>
+                        {
+                            if (!value)
+                            {
+                                BecomeInactive();
+                            }
+                        }).AddTo(ref disposable);
+                    }
+                    else
+                    {
+                        BecomeInactive();
+                    }
                 }
                 else
                 {
-                    BecomeInactive();
+                    Move(Vector2Int.down);
                 }
             }
-            else
+            catch (Exception e)
             {
-                Move(Vector2Int.down);
+                Debug.LogException(e);
+                throw;
             }
         }
 

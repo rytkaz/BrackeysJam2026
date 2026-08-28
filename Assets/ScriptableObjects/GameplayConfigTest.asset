@@ -28,6 +28,6 @@ MonoBehaviour:
       Weight: 1
     - Value: {fileID: 11400000, guid: 89b047d30b7e27347b5b3c292b11ff31, type: 2}
       Weight: 1
-    - Value: {fileID: 11400000, guid: 934dedbba80b43544857f339823dd3fe, type: 2}
+    - Value: {fileID: 11400000, guid: 549539d27337ca345ac8dfd7d32c3907, type: 2}
       Weight: 5
   dropSpeedMultiplier: 0.1

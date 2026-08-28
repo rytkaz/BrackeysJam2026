@@ -29,16 +29,22 @@ namespace BlocksGame.Gameplay
             disposable?.Dispose();
             disposable = GlobalMessagePipe.GetSubscriber<MGameplayPieceFinished>().Subscribe(_ =>
             {
-
-                durationRemaining--;
-                if (durationRemaining > 0) return;
-                disposable?.Dispose();
-                var size = new List<Vector2Int>(piece.Size);
-                foreach (var coordsOffset in size)
+                try
                 {
-                    piece.ClearSingleBlock(coordsOffset + piece.CenterCoordinates);
+                    durationRemaining--;
+                    if (durationRemaining > 0) return;
+                    disposable?.Dispose();
+                    var size = new List<Vector2Int>(piece.Size);
+                    foreach (var coordsOffset in size)
+                    {
+                        piece.ClearSingleBlock(coordsOffset + piece.CenterCoordinates);
+                    }
                 }
-
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    throw;
+                }
             });
         }
 

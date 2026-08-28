@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7243b4dbdb2e46bdaf3c6c617096da97, type: 3}
-  m_Name: TimedPIece
+  m_Name: TimedPiece
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.MoverPieceFactory
   behaviours:
   - rid: 7769462071218405453
@@ -28,4 +28,4 @@ MonoBehaviour:
     - rid: 7769462071218405453
       type: {class: TimedPieceBehaviourFactory, ns: BlocksGame.Gameplay, asm: BlocksGame}
       data:
-        durationRange: {x: 1, y: 5}
+        durationRange: {x: 2, y: 5}
