@@ -83,6 +83,7 @@ namespace BlocksGame.Gameplay
                 score.Value += rowsCleared;
             }
             SpawnRandomPiece();
+            GlobalMessagePipe.GetPublisher<MGameplayPieceFinished>().Publish(new MGameplayPieceFinished());
         }
         
         private void TickGameplayLoop()

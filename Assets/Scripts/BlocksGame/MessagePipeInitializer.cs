@@ -1,4 +1,6 @@
-﻿using MessagePipe;
+﻿using System;
+using MessagePipe;
+using R3;
 using UnityEngine;
 
 namespace BlocksGame
@@ -11,6 +13,7 @@ namespace BlocksGame
             GlobalMessagePipe.SetProvider(new BuiltinContainerBuilder()
                 .AddMessagePipe()
                 .AddMessageBroker<MGameplayTick>()
+                .AddMessageBroker<MGameplayPieceFinished>()
                 .BuildServiceProvider());
         }
     }

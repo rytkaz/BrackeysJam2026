@@ -32,6 +32,11 @@ namespace BlocksGame.Gameplay
         
         private void UpdateBlocks()
         {
+            if (piece.Size.Count == 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
             for (int i = 0; i < piece.Size.Count; i++)
             {
                 if (spawnedBlocks.Count <= i)
