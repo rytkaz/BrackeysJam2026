@@ -16,7 +16,7 @@ namespace BlocksGame.Gameplay
         public ReadOnlyReactiveProperty<int> SecondsElapsed => secondsElapsed;
         public ReadOnlyReactiveProperty<int> Score => score;
         public IPiece ActivePiece => activePiece;
-        public bool DropHeld = false;
+        [HideInInspector] public bool DropHeld = false;
         
         private ReactiveProperty<int> secondsElapsed = new ReactiveProperty<int>(0);
         private ReactiveProperty<int> score = new ReactiveProperty<int>(0);
@@ -39,7 +39,7 @@ namespace BlocksGame.Gameplay
         
         private void SpawnRandomPiece()
         {
-            activePiece = config.StandardPieceFactories[UnityEngine.Random.Range(0, config.StandardPieceFactories.Length)].CreatePiece(grid);
+            activePiece = config.Pieces.GetRandom().CreatePiece(grid);
             var startingCoords = new Vector2Int(grid.View.GridSize.x / 2, grid.View.PlayableGridHeight);
             if (grid.CheckIsMoveValid(activePiece, startingCoords))
             {
@@ -106,6 +106,7 @@ namespace BlocksGame.Gameplay
         private void OnDestroy()
         {
             timer?.Dispose();
+            inputHandler?.Cleanup();
         }
     }
 }

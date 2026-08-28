@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BlocksGame.Gameplay
@@ -135,6 +136,24 @@ namespace BlocksGame.Gameplay
         public bool IsGridSlotEmpty(Vector2Int coordinates)
         {
             return pieces[coordinates.x, coordinates.y] == null;
+        }
+
+        public List<Vector2Int> GetTopEmptySlots()
+        {
+            var emptySlots = new List<Vector2Int>();
+            for (int x = 0; x < pieces.GetLength(0); x++)
+            {
+                for (int y = 0; y < pieces.GetLength(1); y++)
+                {
+                    if (pieces[x, y] != null)
+                    {
+                        continue;
+                    }
+                    emptySlots.Add(new Vector2Int(x, y));
+                    break;
+                }
+            }
+            return emptySlots;
         }
     }
 }

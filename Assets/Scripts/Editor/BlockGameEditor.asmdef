@@ -2,7 +2,8 @@
     "name": "BlockGameEditor",
     "rootNamespace": "BlockGame.Editor",
     "references": [
-        "GUID:f5b82b5c6787d814389677550bbbd601"
+        "GUID:f5b82b5c6787d814389677550bbbd601",
+        "GUID:1b845e2499b39be4aab3e6ac2c8aa02a"
     ],
     "includePlatforms": [
         "Editor"

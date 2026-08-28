@@ -22,7 +22,7 @@ namespace BlocksGame.Gameplay
         private readonly Grid grid;
         private readonly Dictionary<Rotation, Vector2Int[]> shapeRotations;
 
-        public StandardPiece(Vector2Int[] size, Grid grid, Dictionary<Rotation, Vector2Int[]> shapeRotations)
+        public StandardPiece(Grid grid, Dictionary<Rotation, Vector2Int[]> shapeRotations)
         {
             this.grid = grid;
             this.shapeRotations =  shapeRotations;

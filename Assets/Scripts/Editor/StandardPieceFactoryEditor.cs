@@ -1,10 +1,11 @@
-﻿using UnityEditor;
+﻿using Toolbox.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace BlocksGame.Gameplay
 {
     [CustomEditor(typeof(StandardPieceFactory))]
-    public class StandardPieceFactoryEditor : Editor
+    public class StandardPieceFactoryEditor : ToolboxEditor
     {
         private const int cellSize = 30;
         private SerializedProperty shapeDefaultProperty;
@@ -22,11 +23,13 @@ namespace BlocksGame.Gameplay
             gridSizeProperty = serializedObject.FindProperty("gridSize");
         }
 
-        public override void OnInspectorGUI()
+        public override void DrawCustomInspector()
         {
+            base.DrawCustomInspector();
+
             serializedObject.Update();
 
-            DrawDefaultInspector();
+            //DrawDefaultInspector();
 
             EditorGUILayout.Space(10);
             EditorGUILayout.LabelField("Shape Editor", EditorStyles.boldLabel);

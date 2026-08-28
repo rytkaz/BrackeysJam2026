@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.StandardPieceFactory
   pieceViewPrefab: {fileID: 344488905437013165, guid: 750a83574e12cf44794c69a106923fad, type: 3}
   color: {r: 0.76862746, g: 0.7993006, b: 1, a: 1}
-  shapeCoordinates:
-  - {x: 0, y: 0}
-  - {x: 0, y: -1}
-  - {x: 0, y: 1}
-  - {x: -1, y: -1}
+  behaviours:
+  - rid: 7769462066112102637
+  behaviour:
+    rid: -2
   shape90:
   - {x: 0, y: 0}
   - {x: -1, y: 0}
@@ -40,3 +39,11 @@ MonoBehaviour:
   - {x: -1, y: -1}
   - {x: 0, y: 1}
   gridSize: 3
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 7769462066112102637
+      type: {class: MoverPieceBehaviourFactory, ns: BlocksGame.Gameplay, asm: BlocksGame}
+      data: 

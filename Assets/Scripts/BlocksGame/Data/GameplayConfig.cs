@@ -5,10 +5,11 @@ namespace BlocksGame.Gameplay
     [CreateAssetMenu(fileName = "GameplayConfig", menuName = "BlockGame/GameplayConfig")]
     public class GameplayConfig : ScriptableObject
     {
-        [SerializeField, ReorderableList, ReferencePicker(TypeGrouping = TypeGrouping.None)] private PieceFactory[] standardPieceFactories;
+        [SerializeField, ReorderableList] private WeightedList<PieceFactory> pieces;
+        
         [SerializeField] private float dropSpeedMultiplier;
         
-        public PieceFactory[] StandardPieceFactories => standardPieceFactories;
+        public  WeightedList<PieceFactory> Pieces => pieces;
         public float DropSpeedMultiplier => dropSpeedMultiplier;
     }
 }

@@ -25,7 +25,7 @@ namespace BlocksGame.UI
 
         private void UpdateTimeElapsed(int time)
         {
-            TimeSpan timeElapsed = TimeSpan.FromSeconds(time) + TimeSpan.FromHours(55);
+            TimeSpan timeElapsed = TimeSpan.FromSeconds(time);
             var sb = new StringBuilder();
             if (timeElapsed.TotalHours > 1)
             {

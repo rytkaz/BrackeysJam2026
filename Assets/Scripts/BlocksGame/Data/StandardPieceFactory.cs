@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BlocksGame.Gameplay
@@ -16,18 +17,16 @@ namespace BlocksGame.Gameplay
     {
         [SerializeField] private PieceView pieceViewPrefab;
         [SerializeField] private Color color;
-        [SerializeField, HideInInspector] private Vector2Int[] shapeCoordinates = new Vector2Int[] { Vector2Int.zero };
         [SerializeField, HideInInspector] private Vector2Int[] shape90 = new Vector2Int[] { Vector2Int.zero };
         [SerializeField, HideInInspector] private Vector2Int[] shape180 = new Vector2Int[] { Vector2Int.zero };
         [SerializeField, HideInInspector] private Vector2Int[] shape270 = new Vector2Int[] { Vector2Int.zero };
         [SerializeField, HideInInspector] private Vector2Int[] shapeDefault = new Vector2Int[] { Vector2Int.zero };
-
         [SerializeField, HideInInspector] private int gridSize = 7;
 
         public override IPiece CreatePiece(Grid grid)
         {
             var view = Instantiate(pieceViewPrefab, grid.View.transform);
-            var piece = new StandardPiece(shapeCoordinates, grid, new Dictionary<Rotation, Vector2Int[]>()
+            var piece = new StandardPiece(grid, new Dictionary<Rotation, Vector2Int[]>()
             {
                 {Rotation.Deg0, shapeDefault},
                 {Rotation.Deg90, shape90},
@@ -38,5 +37,4 @@ namespace BlocksGame.Gameplay
             return piece;
         }
     }
-
 }
