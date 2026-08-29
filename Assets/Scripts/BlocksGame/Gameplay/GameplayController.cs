@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using MessagePipe;
 using R3;
 using UnityEngine;
-using DisposableBag = R3.DisposableBag;
 
 namespace BlocksGame.Gameplay
 {
@@ -21,10 +19,11 @@ namespace BlocksGame.Gameplay
         private ReactiveProperty<int> secondsElapsed = new ReactiveProperty<int>(0);
         private ReactiveProperty<int> score = new ReactiveProperty<int>(0);
 
-        private float gameplayTickInterval = 1;
-        private float timeSinceLastTick = 0;
-        private Grid grid;
         private InputHandler inputHandler;
+        private Grid grid;
+        private DifficultyHandler difficultyHandler;
+        
+        private float timeSinceLastTick = 0;
         private IPiece activePiece;
         private bool tickGameplay = true;
         private IDisposable timer;
@@ -32,6 +31,7 @@ namespace BlocksGame.Gameplay
         
         public void Start()
         {
+            difficultyHandler = new DifficultyHandler(this, config);
             grid = new Grid(gridView);
             inputHandler = new InputHandler(this);
             SpawnRandomPiece();
@@ -40,7 +40,7 @@ namespace BlocksGame.Gameplay
         
         private void SpawnRandomPiece()
         {
-            activePiece = config.Pieces.GetRandom().CreatePiece(grid);
+            activePiece = difficultyHandler.GetNextPiece().CreatePiece(grid);
             var startingCoords = new Vector2Int(grid.View.GridSize.x / 2, grid.View.PlayableGridHeight);
             if (grid.CheckIsMoveValid(activePiece, startingCoords))
             {
@@ -82,8 +82,8 @@ namespace BlocksGame.Gameplay
                 grid.MoveRowsDown(highestRowCleared + 1, rowsCleared);
                 score.Value += rowsCleared;
             }
-            SpawnRandomPiece();
             GlobalMessagePipe.GetPublisher<MGameplayPieceFinished>().Publish(new MGameplayPieceFinished());
+            SpawnRandomPiece();
         }
         
         private void TickGameplayLoop()
@@ -99,7 +99,7 @@ namespace BlocksGame.Gameplay
             }
             
             timeSinceLastTick += Time.deltaTime;
-            if (timeSinceLastTick >= (DropHeld ? gameplayTickInterval * config.DropSpeedMultiplier : gameplayTickInterval))
+            if (timeSinceLastTick >= (DropHeld ? difficultyHandler.GetGameplayTickInterval() * config.DropSpeedMultiplier : difficultyHandler.GetGameplayTickInterval()))
             {
                 timeSinceLastTick = 0;
                 TickGameplayLoop();
@@ -111,6 +111,7 @@ namespace BlocksGame.Gameplay
             pieceStateDisposable?.Dispose();
             timer?.Dispose();
             inputHandler?.Cleanup();
+            difficultyHandler?.Cleanup();
         }
     }
 }

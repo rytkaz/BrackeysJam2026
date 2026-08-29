@@ -28,10 +28,23 @@ MonoBehaviour:
       Weight: 10
     - Value: {fileID: 11400000, guid: 89b047d30b7e27347b5b3c292b11ff31, type: 2}
       Weight: 10
+  enemyPieces:
+    entries:
     - Value: {fileID: 11400000, guid: 6c6de4efff7cc37468d3cad3d59d939d, type: 2}
       Weight: 10
     - Value: {fileID: 11400000, guid: 934dedbba80b43544857f339823dd3fe, type: 2}
       Weight: 10
+  bossPieces:
+    entries:
     - Value: {fileID: 11400000, guid: 5ca92a3dba17e96448d275e94c20bb56, type: 2}
-      Weight: 1
+      Weight: 10
+    - Value: {fileID: 11400000, guid: f6b2626a167751048b0cd1becc9e4db2, type: 2}
+      Weight: 10
+    - Value: {fileID: 11400000, guid: b2c9ea284538eea408840b038ccfad60, type: 2}
+      Weight: 10
+  gameplayTickInterval: 1
   dropSpeedMultiplier: 0.1
+  initialEnemyFrequency: 0.6
+  piecesUntilBoss: {x: 20, y: 30}
+  enemyFrequencyMultiplierPerMin: 1.05
+  maxEnemyFrequency: 0.95
