@@ -61,6 +61,11 @@ namespace BlocksGame.UI
                 screen.Toggle();
             }
         }
+
+        public void Pause()
+        {
+            ToggleScreen(new MToggleGameUI() { ScreenType = GameUIScreenType.Pause });
+        }
     }
 }
 
