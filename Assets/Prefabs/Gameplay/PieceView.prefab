@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7a1e19209fa460b879053406a6bcfde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.PieceView
-  singleBlockPrefab: {fileID: 6978927082650775103, guid: b34b6e2061891b443a2c7376c8cc22de, type: 3}
+  singleBlockPrefab: {fileID: 5805008259076618184, guid: b34b6e2061891b443a2c7376c8cc22de, type: 3}

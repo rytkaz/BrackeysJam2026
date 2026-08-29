@@ -6,12 +6,12 @@ namespace BlocksGame.Gameplay
 {
     public class PieceView : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer singleBlockPrefab;
+        [SerializeField] private SingeBlockView singleBlockPrefab;
         
         private IDisposable disposable;
         private IPiece piece;
-        private List<SpriteRenderer> spawnedBlocks = new List<SpriteRenderer>();
-        private Dictionary<Vector2Int, SpriteRenderer> blocks = new Dictionary<Vector2Int, SpriteRenderer>();
+        private List<SingeBlockView> spawnedBlocks = new List<SingeBlockView>();
+        private Dictionary<Vector2Int, SingeBlockView> blocks = new Dictionary<Vector2Int, SingeBlockView>();
         private Grid grid;
         private Color color;
         
@@ -44,7 +44,7 @@ namespace BlocksGame.Gameplay
                 if (spawnedBlocks.Count <= i)
                 {
                     spawnedBlocks.Add(Instantiate(singleBlockPrefab, transform));
-                    spawnedBlocks[i].color = color;
+                    spawnedBlocks[i].SetColor(color);
                 }
                 spawnedBlocks[i].transform.position = grid.View.GetGridSlotPosition(piece.CenterCoordinates + piece.Size[i]);
                 spawnedBlocks[i].gameObject.SetActive(true);
@@ -56,7 +56,7 @@ namespace BlocksGame.Gameplay
             }
         }
 
-        public SpriteRenderer GetBlockByCoordinates(Vector2Int coordinates)
+        public SingeBlockView GetBlockByCoordinates(Vector2Int coordinates)
         {
             return blocks[coordinates];
         }
