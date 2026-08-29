@@ -33,19 +33,19 @@ MonoBehaviour:
     - Value: {fileID: 11400000, guid: 6c6de4efff7cc37468d3cad3d59d939d, type: 2}
       Weight: 5
     - Value: {fileID: 11400000, guid: 934dedbba80b43544857f339823dd3fe, type: 2}
-      Weight: 10
+      Weight: 5
   bossPieces:
     entries:
     - Value: {fileID: 11400000, guid: b49ece8da5f0600428f5b37dc8b53ca5, type: 2}
       Weight: 15
     - Value: {fileID: 11400000, guid: 697ef1f67a346e646aec938e729d21e2, type: 2}
-      Weight: 70
+      Weight: 100
     - Value: {fileID: 11400000, guid: 30dd120ca366d7e459f976798dc35448, type: 2}
       Weight: 15
   gameplayTickInterval: 1
   dropSpeedMultiplier: 0.1
   piecesUntilEnemiesStartSpawn: 5
-  initialEnemyFrequency: 0.4
+  initialEnemyFrequency: 0.35
   piecesUntilBoss: {x: 20, y: 30}
   enemyFrequencyMultiplierPerMin: 1.05
   maxEnemyFrequency: 0.95
