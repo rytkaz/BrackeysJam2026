@@ -118,7 +118,6 @@ namespace BlocksGame.Gameplay
                 var targetCoords =  new Vector2Int(targetCoordinates.x, targetCoordinates.y) + coordOffset;
                 if (CheckOutOfBounds(targetCoords))
                 {
-                    Debug.Log($"Out of bounds: {targetCoords} ; GridSize: {pieces.GetLength(0)} ; {pieces.GetLength(1)}");
                     return false;
                 }
                 return IsGridSlotEmpty(targetCoords) || pieces[targetCoords.x, targetCoords.y] == piece;

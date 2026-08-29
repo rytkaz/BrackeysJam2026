@@ -19,7 +19,8 @@ namespace BlocksGame.Gameplay
         public ReadOnlyReactiveProperty<int> Score => score;
         public IPiece ActivePiece => activePiece;
         [HideInInspector] public bool DropHeld = false;
-        
+        public bool TickGameplay { get; private set; }= true;
+
         private ReactiveProperty<int> secondsElapsed = new ReactiveProperty<int>(0);
         private ReactiveProperty<int> score = new ReactiveProperty<int>(0);
 
@@ -29,7 +30,6 @@ namespace BlocksGame.Gameplay
 
         private float timeSinceLastTick = 0;
         private IPiece activePiece;
-        private bool tickGameplay = true;
         private IDisposable disposable;
         private IDisposable pieceStateDisposable;
 
@@ -39,8 +39,8 @@ namespace BlocksGame.Gameplay
             grid = new Grid(gridView);
             inputHandler = new InputHandler(this);
             SpawnRandomPiece();
-            var d1 = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (tickGameplay) secondsElapsed.Value++; });
-            var d2 = GlobalMessagePipe.GetSubscriber<MGamePauseStateChanged>().Subscribe(args => { tickGameplay = !args.IsPaused; });
+            var d1 = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (TickGameplay) secondsElapsed.Value++; });
+            var d2 = GlobalMessagePipe.GetSubscriber<MGamePauseStateChanged>().Subscribe(args => { TickGameplay = !args.IsPaused; });
             disposable = Disposable.Combine(d1, d2);
         }
 
@@ -57,7 +57,7 @@ namespace BlocksGame.Gameplay
             {
                 GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type = AudioType.Sfx, Clip = gameEndSFX });
                 GlobalMessagePipe.GetPublisher<MToggleGameUI>().Publish(new MToggleGameUI {ScreenType = GameUIScreenType.GameOver});
-                tickGameplay = false;
+                TickGameplay = false;
             }
         }
 
@@ -111,7 +111,7 @@ namespace BlocksGame.Gameplay
         
         private void Update()
         {
-            if (!tickGameplay)
+            if (!TickGameplay)
             {
                 return;
             }

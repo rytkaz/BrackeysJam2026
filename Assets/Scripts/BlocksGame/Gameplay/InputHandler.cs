@@ -1,5 +1,7 @@
-﻿using BlocksGame.UI;
+﻿using System;
+using BlocksGame.UI;
 using MessagePipe;
+using R3;
 using UnityEngine.InputSystem;
 
 namespace BlocksGame.Gameplay
@@ -8,18 +10,26 @@ namespace BlocksGame.Gameplay
     {
         private readonly GameplayController gameplayController;
 
+        private IDisposable horizontalMoveRepeat;
+        private bool isLeftPressed = false;
+        private bool isRightPressed = false;
+        
         public InputHandler(GameplayController controller)
         {
             gameplayController = controller;
             InputSystem.actions.FindAction(InputActions.Rotate).performed += OnRotate;
-            InputSystem.actions.FindAction(InputActions.MoveLeft).performed += OnMoveLeft;
-            InputSystem.actions.FindAction(InputActions.MoveRight).performed += OnMoveRight;
             InputSystem.actions.FindAction(InputActions.Pause).performed += OnPause;
+            var moveLeftAction = InputSystem.actions.FindAction(InputActions.MoveLeft);
+            moveLeftAction.started += StartMoveLeft;
+            moveLeftAction.canceled += StopMoveLeft;
+            var moveRightAction = InputSystem.actions.FindAction(InputActions.MoveRight);
+            moveRightAction.started += StartMoveRight;
+            moveRightAction.canceled += StopMoveRight;
             var dropAction = InputSystem.actions.FindAction(InputActions.Drop);
             dropAction.started += OnDropStart;
             dropAction.canceled += OnDropCancel;
         }
-
+        
         private void OnDropCancel(InputAction.CallbackContext context)
         {
             gameplayController.DropHeld = false;
@@ -39,23 +49,68 @@ namespace BlocksGame.Gameplay
         {
             gameplayController.ActivePiece.Rotate();
         }
-
-        private void OnMoveLeft(InputAction.CallbackContext context)
+        
+        private void StartMoveLeft(InputAction.CallbackContext context)
         {
-            gameplayController.ActivePiece.MoveHorizontal(-1);
+            isLeftPressed = true;
+            StartHorizontalMove(-1);
         }
 
-        private void OnMoveRight(InputAction.CallbackContext context)
+        private void StopMoveLeft(InputAction.CallbackContext context)
         {
-            gameplayController.ActivePiece.MoveHorizontal(1);
+            isLeftPressed = false;
+            StopHorizontalMove();
+            if (isRightPressed)
+            {
+                StartHorizontalMove(1);
+            }
+        }
+
+        private void StartMoveRight(InputAction.CallbackContext context)
+        {
+            isRightPressed = true;
+            StartHorizontalMove(1);
+        }
+
+        private void StopMoveRight(InputAction.CallbackContext context)
+        {
+            isRightPressed = false;
+            StopHorizontalMove();
+            if (isLeftPressed)
+            {
+                StartHorizontalMove(-1);
+            }
+        }
+
+        private void StartHorizontalMove(int direction)
+        {
+            horizontalMoveRepeat?.Dispose();
+            gameplayController.ActivePiece.MoveHorizontal(direction);
+            horizontalMoveRepeat = Observable.Interval(TimeSpan.FromSeconds(0.1f)).Subscribe(_ =>
+            {
+                if (gameplayController.ActivePiece != null && gameplayController.TickGameplay)
+                {
+                    gameplayController.ActivePiece.MoveHorizontal(direction);
+                }
+            });
+        }
+
+        private void StopHorizontalMove()
+        {
+            horizontalMoveRepeat?.Dispose();
         }
 
         public void Cleanup()
         {
+            horizontalMoveRepeat?.Dispose();
             InputSystem.actions.FindAction(InputActions.Rotate).performed -= OnRotate;
-            InputSystem.actions.FindAction(InputActions.MoveLeft).performed -= OnMoveLeft;
-            InputSystem.actions.FindAction(InputActions.MoveRight).performed -= OnMoveRight;
             InputSystem.actions.FindAction(InputActions.Pause).performed -= OnPause;
+            var moveLeftAction = InputSystem.actions.FindAction(InputActions.MoveLeft);
+            moveLeftAction.started -= StartMoveLeft;
+            moveLeftAction.canceled -= StopMoveLeft;
+            var moveRightAction = InputSystem.actions.FindAction(InputActions.MoveRight);
+            moveRightAction.started -= StartMoveLeft;
+            moveRightAction.canceled -= StopMoveLeft;
             var dropAction = InputSystem.actions.FindAction(InputActions.Drop);
             dropAction.started -= OnDropStart;
             dropAction.canceled -= OnDropCancel;
