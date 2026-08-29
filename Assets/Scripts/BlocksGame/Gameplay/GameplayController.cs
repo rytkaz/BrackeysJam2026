@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BlocksGame.UI;
 using MessagePipe;
 using R3;
 using UnityEngine;
@@ -25,22 +26,24 @@ namespace BlocksGame.Gameplay
         private InputHandler inputHandler;
         private Grid grid;
         private DifficultyHandler difficultyHandler;
-        
+
         private float timeSinceLastTick = 0;
         private IPiece activePiece;
         private bool tickGameplay = true;
-        private IDisposable timer;
+        private IDisposable disposable;
         private IDisposable pieceStateDisposable;
-        
+
         public void Start()
         {
             difficultyHandler = new DifficultyHandler(this, config);
             grid = new Grid(gridView);
             inputHandler = new InputHandler(this);
             SpawnRandomPiece();
-            timer = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (tickGameplay) secondsElapsed.Value++; });
+            var d1 = Observable.Interval(TimeSpan.FromSeconds(1)).Subscribe(_ => { if (tickGameplay) secondsElapsed.Value++; });
+            var d2 = GlobalMessagePipe.GetSubscriber<MGamePauseStateChanged>().Subscribe(args => { tickGameplay = !args.IsPaused; });
+            disposable = Disposable.Combine(d1, d2);
         }
-        
+
         private void SpawnRandomPiece()
         {
             activePiece = difficultyHandler.GetNextPiece().CreatePiece(grid);
@@ -54,7 +57,8 @@ namespace BlocksGame.Gameplay
             {
                 //TODO: Implement game end
                 Debug.Log("GAME END");
-                GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = gameEndSFX });
+                GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type = AudioType.Sfx, Clip = gameEndSFX });
+                GlobalMessagePipe.GetPublisher<MToggleGameUI>().Publish(new MToggleGameUI {ScreenType = GameUIScreenType.GameOver});
                 tickGameplay = false;
             }
         }
@@ -125,7 +129,7 @@ namespace BlocksGame.Gameplay
         private void OnDestroy()
         {
             pieceStateDisposable?.Dispose();
-            timer?.Dispose();
+            disposable?.Dispose();
             inputHandler?.Cleanup();
             difficultyHandler?.Cleanup();
         }

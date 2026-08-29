@@ -18,9 +18,19 @@ namespace BlocksGame
         public AudioClip Clip;
     }
 
-    public enum AudioType
+    public struct MSetVolume
     {
-        Sfx,
-        Music
+        public VolumeType Type;
+        public float Percentage;
+    }
+
+    public struct MToggleGameUI
+    {
+        public UI.GameUIScreenType ScreenType;
+    }
+
+    public struct MGamePauseStateChanged
+    {
+        public bool IsPaused;
     }
 }

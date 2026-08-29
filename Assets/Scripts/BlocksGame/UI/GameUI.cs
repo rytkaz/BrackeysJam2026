@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Text;
 using BlocksGame.Gameplay;
+using MessagePipe;
 using R3;
 using TMPro;
 using UnityEngine;
 
 namespace BlocksGame.UI
 {
+    public enum GameUIScreenType
+    {
+        GameOver,
+        Pause
+    }
+    
     public class GameUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI scoreText;
         [SerializeField] private TextMeshProUGUI timeText;
         [SerializeField] private GameplayController gameplayController;
+        [SerializeField] private SerializedDictionary<GameUIScreenType, GameUIScreen> screens = new SerializedDictionary<GameUIScreenType, GameUIScreen>();
 
         private IDisposable disposable;
 
@@ -20,6 +28,7 @@ namespace BlocksGame.UI
             var builder = Disposable.CreateBuilder();
             gameplayController.SecondsElapsed.ObserveOnMainThread().Subscribe(UpdateTimeElapsed).AddTo(ref builder);
             gameplayController.Score.ObserveOnMainThread().Subscribe(score => { scoreText.SetText(score.ToString()); }).AddTo(ref builder);
+            GlobalMessagePipe.GetSubscriber<MToggleGameUI>().Subscribe(ToggleScreen).AddTo(ref builder);
             disposable = builder.Build();
         }
 
@@ -43,6 +52,14 @@ namespace BlocksGame.UI
         private void OnDestroy()
         {
             disposable?.Dispose();
+        }
+
+        private void ToggleScreen(MToggleGameUI args)
+        {
+            if (screens.TryGetValue(args.ScreenType, out var screen))
+            {
+                screen.Toggle();
+            }
         }
     }
 }

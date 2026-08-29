@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using BlocksGame.UI;
+using MessagePipe;
 using UnityEngine.InputSystem;
-using R3;
 
 namespace BlocksGame.Gameplay
 {
@@ -32,7 +32,7 @@ namespace BlocksGame.Gameplay
 
         private void OnPause(InputAction.CallbackContext context)
         {
-            //TODO: Implement pause
+            GlobalMessagePipe.GetPublisher<MToggleGameUI>().Publish(new MToggleGameUI() { ScreenType = GameUIScreenType.Pause });
         }
 
         private void OnRotate(InputAction.CallbackContext context)

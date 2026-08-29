@@ -1,6 +1,4 @@
-﻿using System;
-using MessagePipe;
-using R3;
+﻿using MessagePipe;
 using UnityEngine;
 
 namespace BlocksGame
@@ -15,6 +13,9 @@ namespace BlocksGame
                 .AddMessageBroker<MGameplayTick>()
                 .AddMessageBroker<MGameplayPieceFinished>()
                 .AddMessageBroker<MPlayAudio>()
+                .AddMessageBroker<MToggleGameUI>()
+                .AddMessageBroker<MSetVolume>()
+                .AddMessageBroker<MGamePauseStateChanged>()
                 .BuildServiceProvider());
         }
     }
