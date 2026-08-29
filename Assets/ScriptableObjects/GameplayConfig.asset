@@ -36,11 +36,11 @@ MonoBehaviour:
       Weight: 10
   bossPieces:
     entries:
-    - Value: {fileID: 11400000, guid: 5ca92a3dba17e96448d275e94c20bb56, type: 2}
+    - Value: {fileID: 11400000, guid: b49ece8da5f0600428f5b37dc8b53ca5, type: 2}
       Weight: 10
-    - Value: {fileID: 11400000, guid: f6b2626a167751048b0cd1becc9e4db2, type: 2}
+    - Value: {fileID: 11400000, guid: 697ef1f67a346e646aec938e729d21e2, type: 2}
       Weight: 10
-    - Value: {fileID: 11400000, guid: b2c9ea284538eea408840b038ccfad60, type: 2}
+    - Value: {fileID: 11400000, guid: 30dd120ca366d7e459f976798dc35448, type: 2}
       Weight: 10
   gameplayTickInterval: 1
   dropSpeedMultiplier: 0.1
