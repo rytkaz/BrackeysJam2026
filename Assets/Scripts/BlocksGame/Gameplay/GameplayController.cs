@@ -55,8 +55,6 @@ namespace BlocksGame.Gameplay
             }
             else
             {
-                //TODO: Implement game end
-                Debug.Log("GAME END");
                 GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type = AudioType.Sfx, Clip = gameEndSFX });
                 GlobalMessagePipe.GetPublisher<MToggleGameUI>().Publish(new MToggleGameUI {ScreenType = GameUIScreenType.GameOver});
                 tickGameplay = false;
