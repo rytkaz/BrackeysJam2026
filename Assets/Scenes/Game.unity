@@ -256,6 +256,51 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &541914465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 541914467}
+  - component: {fileID: 541914466}
+  m_Layer: 0
+  m_Name: Music
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &541914466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541914465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf29e5ed80724c6f8d9b1fa4a66fd9e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BlocksGame::BlocksGame.MusicTrigger
+  musicClip: {fileID: 8300000, guid: 65b30ac27b79cae4cbf47e001eed9d79, type: 3}
+--- !u!4 &541914467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541914465}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 570.6404, y: 909.6525, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &971467754
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,6 +332,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.GameplayController
   config: {fileID: 11400000, guid: 1a135cf8454fd0d45b59b48205bdf957, type: 2}
   gridView: {fileID: 1546258894}
+  rowClearSFX:
+  - {fileID: 8300000, guid: 59ab4f349087421418f44eedf7215909, type: 3}
+  - {fileID: 8300000, guid: 9ecb0e784732e69489b8cc37029d7503, type: 3}
+  - {fileID: 8300000, guid: a0d250409fbfbba40a1bc512fb9767c4, type: 3}
+  - {fileID: 8300000, guid: 26d3dfe1617bdae489f997baca581e3f, type: 3}
+  gameEndSFX: {fileID: 8300000, guid: 6097cdb11104787438f8656ab678e244, type: 3}
+  piecePlacedSFX: {fileID: 8300000, guid: e5cc208936d73dc4daa24a05d3ea5427, type: 3}
   DropHeld: 0
 --- !u!4 &971467756
 Transform:
@@ -560,3 +612,4 @@ SceneRoots:
   - {fileID: 971467756}
   - {fileID: 2429800586507405227}
   - {fileID: 1879009584}
+  - {fileID: 541914467}

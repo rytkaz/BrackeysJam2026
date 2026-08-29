@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BlocksGame::BlocksGame.Gameplay.MoverPieceFactory
   behaviours:
   - rid: 7769462066541232206
+  - rid: 7769462091022598224
   basePieceFactories:
   - {fileID: 11400000, guid: 462008c3a4f54e544a94ccffde014430, type: 2}
   - {fileID: 11400000, guid: a2c5470dc86996d4084390b0d7b16a1e, type: 2}
@@ -28,3 +29,7 @@ MonoBehaviour:
     - rid: 7769462066541232206
       type: {class: MoverPieceBehaviourFactory, ns: BlocksGame.Gameplay, asm: BlocksGame}
       data: 
+    - rid: 7769462091022598224
+      type: {class: EnemyBehaviourFactory, ns: BlocksGame.Gameplay, asm: BlocksGame}
+      data:
+        revealAtMovementEnd: 1

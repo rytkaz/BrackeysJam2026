@@ -9,10 +9,12 @@ namespace BlocksGame.Gameplay
         [SerializeField] private SpriteRenderer bg;
         [SerializeField] private GameObject clock;
         [SerializeField] private TextMeshPro clockLabel;
-
+        [SerializeField] private SpriteRenderer enemySprite;
+        
         private void Awake()
         {
             clock.gameObject.SetActive(false);
+            enemySprite.enabled = false;
         }
 
         public void SetColor(Color color)
@@ -27,6 +29,11 @@ namespace BlocksGame.Gameplay
                 clockLabel.SetText(time.ToString());
             });
             clock.gameObject.SetActive(true);
+        }
+
+        public void EnableEnemySprite()
+        {
+            enemySprite.enabled = true;
         }
     }
 }

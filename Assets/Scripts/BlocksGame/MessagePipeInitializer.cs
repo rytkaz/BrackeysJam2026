@@ -7,13 +7,14 @@ namespace BlocksGame
 {
     public static class MessagePipeInitializer
     {
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
         {
             GlobalMessagePipe.SetProvider(new BuiltinContainerBuilder()
                 .AddMessagePipe()
                 .AddMessageBroker<MGameplayTick>()
                 .AddMessageBroker<MGameplayPieceFinished>()
+                .AddMessageBroker<MPlayAudio>()
                 .BuildServiceProvider());
         }
     }

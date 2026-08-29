@@ -14,6 +14,7 @@ namespace BlocksGame.Gameplay
         private Dictionary<Vector2Int, SingeBlockView> blocks = new Dictionary<Vector2Int, SingeBlockView>();
         private Grid grid;
         private Color color;
+        private bool isEnemy = false;
         
         public void SetPiece(IPiece piece, Grid grid, Color color = default)
         {
@@ -43,8 +44,13 @@ namespace BlocksGame.Gameplay
             {
                 if (spawnedBlocks.Count <= i)
                 {
-                    spawnedBlocks.Add(Instantiate(singleBlockPrefab, transform));
-                    spawnedBlocks[i].SetColor(color);
+                    var newBlock = Instantiate(singleBlockPrefab, transform);
+                    spawnedBlocks.Add(newBlock);
+                    newBlock.SetColor(color);
+                    if (isEnemy)
+                    {
+                        newBlock.EnableEnemySprite();
+                    }
                 }
                 spawnedBlocks[i].transform.position = grid.View.GetGridSlotPosition(piece.CenterCoordinates + piece.Size[i]);
                 spawnedBlocks[i].gameObject.SetActive(true);
@@ -56,6 +62,15 @@ namespace BlocksGame.Gameplay
             }
         }
 
+        public void ShowEnemyIcon()
+        {
+            isEnemy = true;
+            foreach (var block in spawnedBlocks)
+            {
+                block.EnableEnemySprite();
+            }
+        }
+        
         public SingeBlockView GetBlockByCoordinates(Vector2Int coordinates)
         {
             return blocks[coordinates];

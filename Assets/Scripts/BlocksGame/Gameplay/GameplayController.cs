@@ -10,6 +10,9 @@ namespace BlocksGame.Gameplay
     {
         [SerializeField] private GameplayConfig config;
         [SerializeField] private GridView gridView;
+        [SerializeField] private AudioClip[] rowClearSFX;
+        [SerializeField] private AudioClip gameEndSFX;
+        [SerializeField] private AudioClip piecePlacedSFX;
         
         public ReadOnlyReactiveProperty<int> SecondsElapsed => secondsElapsed;
         public ReadOnlyReactiveProperty<int> Score => score;
@@ -51,6 +54,7 @@ namespace BlocksGame.Gameplay
             {
                 //TODO: Implement game end
                 Debug.Log("GAME END");
+                GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = gameEndSFX });
                 tickGameplay = false;
             }
         }
@@ -79,8 +83,20 @@ namespace BlocksGame.Gameplay
             }
             if (rowsCleared > 0)
             {
+                if (rowsCleared - 1 >= rowClearSFX.Length)
+                {
+                    GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = rowClearSFX[rowClearSFX.Length - 1] });
+                }
+                else
+                {
+                    GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = rowClearSFX[rowsCleared - 1] });
+                }
                 grid.MoveRowsDown(highestRowCleared + 1, rowsCleared);
                 score.Value += rowsCleared;
+            }
+            else
+            {
+                GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = piecePlacedSFX });
             }
             GlobalMessagePipe.GetPublisher<MGameplayPieceFinished>().Publish(new MGameplayPieceFinished());
             SpawnRandomPiece();
