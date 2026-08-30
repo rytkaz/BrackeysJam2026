@@ -50,7 +50,7 @@ namespace BlocksGame.Gameplay
                 }
                 return unusedBosses.GetRandom(true);
             }
-            if (totalPiecesSpawned >= config.PiecesUntilEnemiesStartSpawn && Random.Range(0f, 1f) > GetEnemyFrequency())
+            if (totalPiecesSpawned >= config.PiecesUntilEnemiesStartSpawn && Random.Range(0f, 1f) < GetEnemyFrequency())
             {
                 return config.EnemyPieces.GetRandom();
             }

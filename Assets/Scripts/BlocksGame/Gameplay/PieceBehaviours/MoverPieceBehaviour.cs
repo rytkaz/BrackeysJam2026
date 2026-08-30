@@ -44,7 +44,7 @@ namespace BlocksGame.Gameplay
                 blocks.RemoveAt(blockIndex);
                 blocksToMove--;
             }
-            Observable.Timer(TimeSpan.FromSeconds(0.4f)).Subscribe(_ =>
+            Observable.Timer(TimeSpan.FromSeconds(0.6f)).Subscribe(_ =>
             {
                 blockPieceActivityEnd.Value = false;
             });

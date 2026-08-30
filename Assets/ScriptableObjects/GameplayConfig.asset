@@ -45,7 +45,7 @@ MonoBehaviour:
   gameplayTickInterval: 1
   dropSpeedMultiplier: 0.1
   piecesUntilEnemiesStartSpawn: 5
-  initialEnemyFrequency: 0.35
+  initialEnemyFrequency: 0.3
   piecesUntilBoss: {x: 20, y: 30}
   enemyFrequencyMultiplierPerMin: 1.05
   maxEnemyFrequency: 0.95

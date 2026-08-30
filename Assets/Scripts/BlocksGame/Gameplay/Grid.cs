@@ -34,8 +34,9 @@ namespace BlocksGame.Gameplay
             }
             if (pieces[coordinates.x, coordinates.y] != null)
             {
-                Debug.LogError($"Trying to occupy already taken grid slot: {coordinates.x} ; {coordinates.y}");
-                return;
+                pieces[coordinates.x, coordinates.y].ClearSingleBlock(new Vector2Int(coordinates.x, coordinates.y));
+                Debug.LogWarning($"Trying to occupy already taken grid slot: {coordinates.x} ; {coordinates.y}");
+                //return;
             }
             pieces[coordinates.x, coordinates.y] = piece;
         }
@@ -73,26 +74,21 @@ namespace BlocksGame.Gameplay
             return true;
         }
 
-        public void MoveRowsDown(int startingY, int stepsAmount)
+        public void MoveRowsDown(List<int> rowsCleared)
         {
-            bool performedMove = true;
-            //Move all other rows down
-            for (int y = startingY; y < pieces.GetLength(1); y++)
+            foreach (var rowCleared in rowsCleared)
             {
-                if (!performedMove)
+                //Move all other rows down
+                for (int y = rowCleared; y < pieces.GetLength(1); y++)
                 {
-                    //Break loop if last row was empty
-                    break;
-                }
-                performedMove = false;
-                for (int x = 0; x < pieces.GetLength(0); x++)
-                {
-                    if (pieces[x, y] == null)
+                    for (int x = 0; x < pieces.GetLength(0); x++)
                     {
-                        continue;
+                        if (pieces[x, y] == null)
+                        {
+                            continue;
+                        }
+                        pieces[x,y].MoveSingleBlock(new Vector2Int(x,y), new Vector2Int(x,y - 1));
                     }
-                    performedMove = true;
-                    pieces[x,y].MoveSingleBlock(new Vector2Int(x,y), new Vector2Int(x,y - stepsAmount));
                 }
             }
         }

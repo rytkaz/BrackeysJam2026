@@ -65,12 +65,13 @@ namespace BlocksGame.Gameplay
         {
             if (state != PieceState.Inactive) return;
             pieceStateDisposable.Dispose();
+            score.Value += 1;
             HashSet<int> rowsToScan = new HashSet<int>();
             foreach (var coordOffset in activePiece.Size)
             {
                 rowsToScan.Add((activePiece.CenterCoordinates + coordOffset).y);
             }
-            int rowsCleared = 0;
+            List<int> rowsCleared =  new List<int>();
             int highestRowCleared = int.MinValue;
             foreach (var y in rowsToScan)
             {
@@ -80,21 +81,21 @@ namespace BlocksGame.Gameplay
                     {
                         highestRowCleared = y;
                     }
-                    rowsCleared++;
+                    rowsCleared.Add(y);
                 }
             }
-            if (rowsCleared > 0)
+            if (rowsCleared.Count > 0)
             {
-                if (rowsCleared - 1 >= rowClearSFX.Length)
+                if (rowsCleared.Count - 1 >= rowClearSFX.Length)
                 {
                     GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = rowClearSFX[rowClearSFX.Length - 1] });
                 }
                 else
                 {
-                    GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = rowClearSFX[rowsCleared - 1] });
+                    GlobalMessagePipe.GetPublisher<MPlayAudio>().Publish(new MPlayAudio { Type =  AudioType.Sfx, Clip = rowClearSFX[rowsCleared.Count - 1] });
                 }
-                grid.MoveRowsDown(highestRowCleared + 1, rowsCleared);
-                score.Value += rowsCleared;
+                grid.MoveRowsDown(rowsCleared);
+                score.Value += rowsCleared.Count * 20;
             }
             else
             {
